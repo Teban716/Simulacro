@@ -1,66 +1,108 @@
+// Configuración de la API
+const API_BASE_URL = 'http://localhost:3000/api';
+
+// Clase para manejar la comunicación con la API
+class ApiService {
+    static async makeRequest(endpoint, options = {}) {
+        const url = `${API_BASE_URL}${endpoint}`;
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            },
+            ...options
+        };
+
+        try {
+            const response = await fetch(url, config);
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || data.message || 'Error en la petición');
+            }
+            
+            return data;
+        } catch (error) {
+            console.error('Error en API:', error);
+            throw error;
+        }
+    }
+
+    // Login de usuario
+    static async login(email, password) {
+        return this.makeRequest('/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password })
+        });
+    }
+
+    // Registro de usuario
+    static async register(usuario, email, password, confirmPassword) {
+        return this.makeRequest('/register', {
+            method: 'POST',
+            body: JSON.stringify({ 
+                newUsuario: usuario, 
+                newEmail: email, 
+                newPassword: password, 
+                confirmPassword 
+            })
+        });
+    }
+
+    // Obtener citas
+    static async getCitas() {
+        return this.makeRequest('/citas');
+    }
+
+    // Crear cita
+    static async createCita(cita) {
+        return this.makeRequest('/citas', {
+            method: 'POST',
+            body: JSON.stringify(cita)
+        });
+    }
+
+    // Actualizar cita
+    static async updateCita(id, cita) {
+        return this.makeRequest(`/citas/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(cita)
+        });
+    }
+
+    // Eliminar cita
+    static async deleteCita(id) {
+        return this.makeRequest(`/citas/${id}`, {
+            method: 'DELETE'
+        });
+    }
+}
+
 // Clase para manejar usuarios
 class UserManager {
     constructor() {
-        this.users = this.loadUsers();
         this.currentUser = null;
     }
 
-    // Cargar usuarios desde localStorage
-    loadUsers() {
-        const users = localStorage.getItem('users');
-        return users ? JSON.parse(users) : [];
+    // Autenticar usuario
+    async loginUser(email, password) {
+        try {
+            const response = await ApiService.login(email, password);
+            this.currentUser = response.usuario;
+            return response.usuario;
+        } catch (error) {
+            throw new Error(error.message);
+        }
     }
 
-    // Guardar usuarios en localStorage
-    saveUsers() {
-        localStorage.setItem('users', JSON.stringify(this.users));
-    }
-
-    // Crear nuevo usuario
-    createUser(username, email, password) {
-        // Verificar si el usuario ya existe
-        if (this.users.find(user => user.username === username)) {
-            throw new Error('El usuario ya existe');
+    // Registrar usuario
+    async registerUser(username, email, password, confirmPassword) {
+        try {
+            const response = await ApiService.register(username, email, password, confirmPassword);
+            return response.usuario;
+        } catch (error) {
+            throw new Error(error.message);
         }
-
-        // Verificar si el email ya existe
-        if (this.users.find(user => user.email === email)) {
-            throw new Error('El email ya está registrado');
-        }
-
-        // Crear nuevo usuario
-        const newUser = {
-            id: Date.now(),
-            username,
-            email,
-            password: this.hashPassword(password),
-            createdAt: new Date().toISOString()
-        };
-
-        this.users.push(newUser);
-        this.saveUsers();
-        return newUser;
-    }
-
-    // Autenticar usuario por email
-    loginUser(email, password) {
-        const user = this.users.find(u => u.email === email);
-        
-        if (!user) {
-            throw new Error('Email no encontrado');
-        }
-
-        if (user.password !== this.hashPassword(password)) {
-            throw new Error('Contraseña incorrecta');
-        }
-
-        this.currentUser = user;
-        return user;
-    }
-
-    // Hash simple de contraseña (en producción usar bcrypt)
-    hashPassword(password) {
-        return btoa(password); // Codificación base64 simple
     }
 
     // Verificar si hay usuario logueado
@@ -131,7 +173,7 @@ showRegisterBtn.addEventListener('click', toggleForms);
 showLoginBtn.addEventListener('click', toggleForms);
 
 // Manejar login
-loginForm.addEventListener('submit', function(e) {
+loginForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const email = document.getElementById('email').value.trim();
@@ -150,14 +192,13 @@ loginForm.addEventListener('submit', function(e) {
     }
 
     try {
-        const user = userManager.loginUser(email, password);
-        showMessage(`¡Bienvenido ${user.username}!`);
+        const user = await userManager.loginUser(email, password);
+        showMessage(`¡Bienvenido ${user.usuario}!`);
         
-        // Simular redirección después de login exitoso
+        // Guardar usuario en localStorage y redirigir al dashboard
+        localStorage.setItem('currentUser', JSON.stringify(user));
         setTimeout(() => {
-            alert('Login exitoso! Redirigiendo al dashboard...');
-            // Aquí puedes redirigir a la página principal
-            // window.location.href = 'dashboard.html';
+            window.location.href = 'view/dashboard.html';
         }, 1000);
         
     } catch (error) {
@@ -166,7 +207,7 @@ loginForm.addEventListener('submit', function(e) {
 });
 
 // Manejar registro
-registerForm.addEventListener('submit', function(e) {
+registerForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const username = document.getElementById('newUsuario').value.trim();
@@ -203,8 +244,8 @@ registerForm.addEventListener('submit', function(e) {
     }
 
     try {
-        const newUser = userManager.createUser(username, email, password);
-        showMessage(`¡Usuario ${newUser.username} creado exitosamente!`);
+        const newUser = await userManager.registerUser(username, email, password, confirmPassword);
+        showMessage(`¡Usuario ${newUser.usuario} creado exitosamente!`);
         
         // Cambiar al formulario de login
         setTimeout(() => {
@@ -219,21 +260,6 @@ registerForm.addEventListener('submit', function(e) {
 // Verificar si ya hay un usuario logueado al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     if (userManager.isLoggedIn()) {
-        showMessage(`Ya estás logueado como ${userManager.currentUser.username}`);
+        showMessage(`Ya estás logueado como ${userManager.currentUser.usuario}`);
     }
 });
-
-// Función para crear usuario de prueba (opcional)
-function createTestUser() {
-    try {
-        userManager.createUser('admin', 'admin@test.com', '123456');
-        console.log('Usuario de prueba creado: admin@test.com/123456');
-    } catch (error) {
-        console.log('Usuario de prueba ya existe');
-    }
-}
-
-// Crear usuario de prueba si no hay usuarios
-if (userManager.users.length === 0) {
-    createTestUser();
-}

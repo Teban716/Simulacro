@@ -1,0 +1,101 @@
+﻿id_factura;id_citas;metodo_pago
+1;1;Efectivo
+2;2;Efectivo
+3;3;Efectivo
+4;4;Efectivo
+5;5;Efectivo
+6;6;Efectivo
+7;7;Tarjeta Crédito
+8;8;Tarjeta Crédito
+9;9;Tarjeta Crédito
+10;10;Tarjeta Crédito
+11;11;Transferencia
+12;12;Transferencia
+13;13;Transferencia
+14;14;Transferencia
+15;15;Transferencia
+16;16;Tarjeta Débito
+17;17;Tarjeta Débito
+18;18;Tarjeta Débito
+19;19;Tarjeta Débito
+20;20;Transferencia
+21;21;Efectivo
+22;22;Efectivo
+23;23;Efectivo
+24;24;Efectivo
+25;25;Efectivo
+26;26;Efectivo
+27;27;Efectivo
+28;28;Efectivo
+29;29;Efectivo
+30;30;Tarjeta Crédito
+31;31;Tarjeta Crédito
+32;32;Tarjeta Crédito
+33;33;Tarjeta Crédito
+34;34;Tarjeta Crédito
+35;35;Tarjeta Crédito
+36;36;Tarjeta Crédito
+37;37;Tarjeta Crédito
+38;38;Tarjeta Crédito
+39;39;Transferencia
+40;40;Transferencia
+41;41;Transferencia
+42;42;Transferencia
+43;43;Transferencia
+44;44;Tarjeta Débito
+45;45;Tarjeta Débito
+46;46;Tarjeta Débito
+47;47;Tarjeta Débito
+48;48;Tarjeta Débito
+49;49;Tarjeta Débito
+50;50;Tarjeta Débito
+51;51;Tarjeta Débito
+52;52;Tarjeta Créditos
+53;53;Transferencia
+54;54;Efectivo
+55;55;Efectivo
+56;56;Efectivo
+57;57;Efectivo
+58;58;Tarjeta Crédito
+59;59;Tarjeta Crédito
+60;60;Tarjeta Crédito
+61;61;Tarjeta Crédito
+62;62;Tarjeta Crédito
+63;63;Transferencia
+64;64;Transferencia
+65;65;Transferencia
+66;66;Transferencia
+67;67;Transferencia
+68;68;Transferencia
+69;69;Tarjeta Débito
+70;70;Tarjeta Débito
+71;71;Tarjeta Débito
+72;72;Tarjeta Débito
+73;73;Tarjeta Débito
+74;74;Tarjeta Débito
+75;75;Tarjeta Débito
+76;76;Tarjeta Créditos
+77;77;Efectivo
+78;78;Efectivo
+79;79;Tarjeta Crédito
+80;80;Tarjeta Crédito
+81;81;Tarjeta Crédito
+82;82;Tarjeta Crédito
+83;83;Tarjeta Crédito
+84;84;Tarjeta Crédito
+85;85;Transferencia
+86;86;Transferencia
+87;87;Transferencia
+88;88;Transferencia
+89;89;Transferencia
+90;90;Transferencia
+91;91;Transferencia
+92;92;Tarjeta Débito
+93;93;Tarjeta Débito
+94;94;Tarjeta Débito
+95;95;Tarjeta Débito
+96;96;Tarjeta Débito
+97;97;Tarjeta Débito
+98;98;Tarjeta Débito
+99;99;Tarjeta Débito
+100;100;Transferencia
